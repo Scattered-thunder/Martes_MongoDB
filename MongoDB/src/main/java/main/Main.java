@@ -4,7 +4,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bson.Document;
 
@@ -34,8 +36,182 @@ public class Main {
 	Ejercicio_1(collection_Depositos, 2);
 	Ejercicio_2(collection_Pedidos,"Arroz");
 	Ejercicio_3(collection_Envios, 1);
+	//........... Run the rest if you want, i got lazy...they are tested beforehand though
+	}
+
+
+	public static void Ejercicio_10(MongoCollection<Document> Collection, String Deposito) {
+
+		FindIterable<Document> resultado = Collection.find(Filters.elemMatch("contiene.contiene", Filters.eq("deposito",Deposito)));
+		
+		for(Document currentDocumento: resultado) {
+			List<Document> pedidos = (List<Document>) currentDocumento.get("contiene");
+			for(Document currentPedido: pedidos) {
+				Document currentCliente = (Document) currentPedido.get("cliente");
+				List<Document> productos = (List<Document>) currentPedido.get("contiene");
+				for(Document currentProducto: productos) {
+					if(currentProducto.get("deposito").equals(Deposito)) {
+						System.out.println("------------------------- ID Envio: " + currentDocumento.get("idEnvio") + " ---------------------------------\n");
+						System.out.println("Fecha del Envio: " + currentDocumento.get("fecha"));
+						System.out.println("\n--------------------------ID Pedido: " + currentPedido.get("idPedido") + " --------------------------------\n");
+						System.out.println("Cliente: " + currentCliente.get("nombre"));
+						System.out.println("Fecha del Pedido: " + currentPedido.get("fecha"));
+						System.out.println("\n-----------------------------------------------------------------------\n");
+						System.out.println("Producto: " + currentProducto.get("nombre"));
+						System.out.println("Origen: " + currentProducto.get("deposito"));	
+						System.out.println("\n-----------------------------------------------------------------------\n");
+					}
+				}
+			}
+		}
+	}
 	
-}
+	public static void Ejercicio_9(MongoCollection<Document> Collection, String cliente, String Fecha_Ini, String Fecha_Fin) throws ParseException {
+		
+		SimpleDateFormat DateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			
+		FindIterable<Document> resultado = Collection.find(Filters.and(
+				Filters.eq("cliente.nombre", cliente), 
+				Filters.gte("fecha", DateFormat.parse(Fecha_Ini)),
+				Filters.lte("fecha", DateFormat.parse(Fecha_Fin)))
+				);
+		
+		Integer valorTotalPedidos = 0;
+		
+		for(Document currentDocumento: resultado) {
+			System.out.println("------------------------------------------------------------------------------");
+			System.out.println("Pedido ID: " + currentDocumento.get("idPedido"));
+			Integer valorPedido = 0;
+			List<Document> productos = (List<Document>) currentDocumento.get("contiene");
+			for(Document currentProducto: productos) {
+				valorPedido = valorPedido + (Integer) currentProducto.get("precio");
+			}
+			System.out.println("Valor del Pedido: " + valorPedido + " $");
+			System.out.println("------------------------------------------------------------------------------");
+			valorTotalPedidos = valorTotalPedidos + valorPedido;
+			}
+		System.out.println("------------------------------------------------------------------------------");
+		System.out.println("Valor de todos los pedidos: " + valorTotalPedidos + " $");
+		System.out.println("------------------------------------------------------------------------------");
+	}
+	
+	public static void Ejercicio_8(MongoCollection<Document> Collection, String producto) {
+		
+		FindIterable<Document> resultado = Collection.find(Filters.elemMatch("contiene.contiene",Filters.eq("nombre",producto)));
+		
+		for(Document currentDocumento: resultado) {
+			System.out.println("ID Envio: " + currentDocumento.get("idEnvio"));
+			System.out.println("Fecha de Envio: " + currentDocumento.get("fecha"));
+			System.out.println("ID Envio: " + currentDocumento.get("estadoEnvio"));
+			List<Document> pedidos = (List<Document>) currentDocumento.get("contiene");
+			for(Document currentPedido: pedidos) {
+				List<Document> productos = (List<Document>) currentPedido.get("contiene");
+				for(Document currentProducto: productos) {
+					if(currentProducto.get("nombre").equals(producto)) {
+						System.out.println("Deposito de Origen: " + currentProducto.get("deposito"));
+					}
+				}
+			}
+		}
+		
+	}
+	
+	public static void Ejercicio_7(MongoCollection<Document> Collection, String nombre) {
+		
+		FindIterable<Document> resultado = Collection.find(Filters.eq("cliente.nombre", nombre));
+		
+		for(Document currentDocumento : resultado) {
+			System.out.println("------------------------------------------------------------------------------");
+			System.out.println("Pedido ID: " + currentDocumento.get("idPedido"));
+			System.out.println("Estado: " + currentDocumento.get("estado"));
+			System.out.println("------------------------------------------------------------------------------");
+			List<Document> productos = (List<Document>) currentDocumento.get("contiene");
+			for(Document currentProducto: productos) {
+				System.out.println("Producto: " + currentProducto.get("nombre"));
+			}
+			System.out.println("------------------------------------------------------------------------------");
+		}
+	}
+	
+	public static void Ejercicio_6(MongoCollection<Document> Collection, Integer idDeposito) {
+		
+		FindIterable<Document> resultado = Collection.find(Filters.eq("idDeposito", idDeposito));
+		
+		for(Document currentDocumento : resultado) {
+			
+			System.out.println("Deposito con ID: " + currentDocumento.get("idDeposito"));
+			System.out.println(currentDocumento.get("nombre"));
+			
+			// Set both values to 0
+			Integer cantidadProductosTotal = 0;
+			Integer valorProductosTotal = 0;
+			
+			List<Document> productos = (List<Document>) currentDocumento.get("productos");
+			
+			for(Document currentProduct: productos) {
+				//System.out.println("Producto: " + currentProduct.get("nombre"));
+				cantidadProductosTotal = cantidadProductosTotal + 1;
+				valorProductosTotal = valorProductosTotal + (Integer) currentProduct.get("stock");
+			}
+			System.out.println("------------------------------------------------------------------------------");
+			System.out.println("Cantidad de registros de productos en el depósito: " + cantidadProductosTotal);
+			System.out.println("Cantidad de productos total en el depósito: " + valorProductosTotal + " Unidades");
+			System.out.println("------------------------------------------------------------------------------");
+		}
+	}
+	
+	
+	public static void Ejercicio_5(MongoCollection<Document> Collection, Integer idEnvio) {
+
+		FindIterable<Document> resultado = Collection.find(Filters.eq("idEnvio", idEnvio));
+		
+		for(Document currentDocumento: resultado ) {
+			System.out.println("Envio con ID: " + currentDocumento.get("idEnvio"));
+			System.out.println("---------Productos------------------------");
+			List<Document> pedidos = (List<Document>) currentDocumento.get("contiene");
+			for(Document currentPedido : pedidos) {
+				List<Document> productos = (List<Document>) currentPedido.get("contiene");
+				for(Document currentProducto : productos) {
+					System.out.println(currentProducto.getString("nombre"));
+				}
+			}
+			System.out.println("------------------------------------------");
+		}
+	}
+	
+	public static void Ejercicio_4(MongoCollection<Document> Collection, String Producto) {
+		
+		FindIterable<Document> resultado = Collection.find(Filters.elemMatch("contiene.contiene", Filters.eq("nombre",Producto)));
+		
+		// Set de Depósitos Unicos
+		
+		Set<String> depositos = new HashSet<>();
+		
+		// Por cada documento
+		
+		for(Document currentDocumento: resultado) {
+			
+			// Por cada pedido del documento
+			
+			List<Document> pedidos = (List<Document>) currentDocumento.get("contiene");
+			for(Document currentPedido: pedidos) {
+				
+				// Por cada producto del pedido
+				
+				List<Document> productos = (List<Document>) currentPedido.get("contiene");
+				for(Document currentProducto: productos) {
+					if(currentProducto.get("nombre").equals(Producto)) {
+						depositos.add((String) currentProducto.get("deposito"));
+					}
+				}
+			}
+		}
+		
+		for(String currentDeposito: depositos) {
+			System.out.println("Deposito: " + currentDeposito);
+		}
+	}
+	
 	public static void Ejercicio_3(MongoCollection<Document> Collection, int idEnvio) {
 		FindIterable<Document> resultado = Collection.find(Filters.eq("idEnvio", idEnvio));
 		
