@@ -20,12 +20,10 @@ public class Main {
 
 	public static void main(String[] args) throws ParseException{
 
-	// I connect myself to MongoDB Instance
 	MongoCollection<Document> collection_Depositos = connectToMongoDB("HarryPractica", "Depositos");
 	MongoCollection<Document> collection_Envios = connectToMongoDB("HarryPractica", "Envios");
 	MongoCollection<Document> collection_Pedidos = connectToMongoDB("HarryPractica", "Pedidos");
 	
-	// Add all the data, RUN ONLY ONCE OR YOU WILL GET DUPLICATE ENTRIES, dont forget to run it first lol 
 	/*
 	agregarDatos(collection_Depositos);
 	agregarDatosPedidos(collection_Pedidos);
@@ -36,7 +34,6 @@ public class Main {
 	Ejercicio_1(collection_Depositos, 2);
 	Ejercicio_2(collection_Pedidos,"Arroz");
 	Ejercicio_3(collection_Envios, 1);
-	//........... Run the rest if you want, i got lazy...they are tested beforehand though
 	}
 
 
@@ -142,14 +139,12 @@ public class Main {
 			System.out.println("Deposito con ID: " + currentDocumento.get("idDeposito"));
 			System.out.println(currentDocumento.get("nombre"));
 			
-			// Set both values to 0
 			Integer cantidadProductosTotal = 0;
 			Integer valorProductosTotal = 0;
 			
 			List<Document> productos = (List<Document>) currentDocumento.get("productos");
 			
 			for(Document currentProduct: productos) {
-				//System.out.println("Producto: " + currentProduct.get("nombre"));
 				cantidadProductosTotal = cantidadProductosTotal + 1;
 				valorProductosTotal = valorProductosTotal + (Integer) currentProduct.get("stock");
 			}
@@ -183,20 +178,12 @@ public class Main {
 		
 		FindIterable<Document> resultado = Collection.find(Filters.elemMatch("contiene.contiene", Filters.eq("nombre",Producto)));
 		
-		// Set de Depósitos Unicos
-		
 		Set<String> depositos = new HashSet<>();
-		
-		// Por cada documento
 		
 		for(Document currentDocumento: resultado) {
 			
-			// Por cada pedido del documento
-			
 			List<Document> pedidos = (List<Document>) currentDocumento.get("contiene");
 			for(Document currentPedido: pedidos) {
-				
-				// Por cada producto del pedido
 				
 				List<Document> productos = (List<Document>) currentPedido.get("contiene");
 				for(Document currentProducto: productos) {
@@ -256,8 +243,6 @@ public class Main {
 		}
 	}
 	
-	// Obtener todos los productos almacenados en un depósito específico
-	
 	public static void Ejercicio_1(MongoCollection<Document> Collection, int idDeposito) {
 		
 		FindIterable<Document> resultado = Collection.find(Filters.eq("idDeposito",idDeposito));
@@ -277,10 +262,8 @@ public class Main {
 	
 	public static void agregarDatosEnvios(MongoCollection<Document> Collection) throws ParseException {
 		
-		SimpleDateFormat DateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	    SimpleDateFormat DateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		
-		// Second List of Products
-	    
 	    List<Document> productos2 = new ArrayList<>();
 	    
 	    productos2.add(createProducto(1, "Arroz", 120).append("deposito", "Juanjo Depositos")); // Reused product
@@ -334,16 +317,14 @@ public class Main {
 	    productos.add(createProducto(5, "Sal", 300).append("precio", 1100));
 	    productos.add(createProducto(6, "Harina", 180).append("precio", 2500));
 		
-	    // Second List of Products
-	    
 	    List<Document> productos2 = new ArrayList<>();
 	    
-        productos2.add(createProducto(1, "Arroz", 120).append("precio", 2000)); // Reused product
-        productos2.add(createProducto(3, "Aceite", 85).append("precio", 2500));  // Reused product
-        productos2.add(createProducto(7, "Pasta", 200).append("precio", 2120));  // New product
-        productos2.add(createProducto(8, "Lentejas", 150).append("precio", 1500)); // New product
-        productos2.add(createProducto(9, "Sopa Instantánea", 90).append("precio", 3000)); // New product
-        productos2.add(createProducto(10, "Cereal", 200).append("precio", 5110)); // New product 
+        productos2.add(createProducto(1, "Arroz", 120).append("precio", 2000)); 
+        productos2.add(createProducto(3, "Aceite", 85).append("precio", 2500));  
+        productos2.add(createProducto(7, "Pasta", 200).append("precio", 2120)); 
+        productos2.add(createProducto(8, "Lentejas", 150).append("precio", 1500)); 
+        productos2.add(createProducto(9, "Sopa Instantánea", 90).append("precio", 3000)); 
+        productos2.add(createProducto(10, "Cereal", 200).append("precio", 5110)); 
 	    
 	    
 		SimpleDateFormat DateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -366,9 +347,8 @@ public class Main {
 	}
 	
 	public static void agregarDatos(MongoCollection<Document> Collection) {
-	// i create some products for the Depot
 		
-		List<Document> productos = new ArrayList<>();
+	    List<Document> productos = new ArrayList<>();
 		
 	    productos.add(createProducto(1, "Arroz", 150));
 	    productos.add(createProducto(2, "Frijoles", 200));
@@ -376,19 +356,15 @@ public class Main {
 	    productos.add(createProducto(4, "Azúcar", 250));
 	    productos.add(createProducto(5, "Sal", 300));
 	    productos.add(createProducto(6, "Harina", 180));
-
-	    // Second Array of Products
 	    
 	    List<Document> productos2 = new ArrayList<>();
 	    
-        productos2.add(createProducto(1, "Arroz", 120)); // Reused product
-        productos2.add(createProducto(3, "Aceite", 85));  // Reused product
-        productos2.add(createProducto(7, "Pasta", 200));  // New product
-        productos2.add(createProducto(8, "Lentejas", 150)); // New product
-        productos2.add(createProducto(9, "Sopa Instantánea", 90)); // New product
-        productos2.add(createProducto(10, "Cereal", 200)); // New product 
-	    
-	    // I create a new Deposito
+        productos2.add(createProducto(1, "Arroz", 120));
+        productos2.add(createProducto(3, "Aceite", 85)); 
+        productos2.add(createProducto(7, "Pasta", 200));  
+        productos2.add(createProducto(8, "Lentejas", 150)); 
+        productos2.add(createProducto(9, "Sopa Instantánea", 90)); 
+        productos2.add(createProducto(10, "Cereal", 200)); 
 	    
 	    Document Deposito_A = crearDeposito(1, "Juanjo Depositos", "Av.Corrientes 2500", "500", productos);
 	    
@@ -416,7 +392,6 @@ public class Main {
 		String url = "mongodb://localhost:32769";
 		try {
 			MongoClient mongoClient = MongoClients.create(url);
-			// I retrieve the collection
 			MongoCollection<Document> collection = mongoClient.getDatabase(database).getCollection(collectionName);
 			System.out.println("Conectado a MongoDB");
 			return collection;
