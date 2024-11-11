@@ -266,19 +266,17 @@ public class Main {
 		
 	    List<Document> productos2 = new ArrayList<>();
 	    
-	    productos2.add(createProducto(1, "Arroz", 120).append("deposito", "Juanjo Depositos")); // Reused product
-	    productos2.add(createProducto(3, "Aceite", 85).append("deposito", "Juanjo Depositos"));  // Reused product
-	    productos2.add(createProducto(7, "Pasta", 200).append("deposito", "Fede Depositos"));  // New product
-	    productos2.add(createProducto(8, "Lentejas", 150).append("deposito", "Fede Depositos")); // New product
-	    productos2.add(createProducto(9, "Sopa Instantánea", 90).append("deposito", "Juanjo Depositos")); // New product
-	    productos2.add(createProducto(10, "Cereal", 200).append("deposito", "Juanjo Depositos")); // New product 
-	   
-	    // Third List of Products
+	    productos2.add(createProducto(1, "Arroz", 120).append("deposito", "Juanjo Depositos")); 
+	    productos2.add(createProducto(3, "Aceite", 85).append("deposito", "Juanjo Depositos")); 
+	    productos2.add(createProducto(7, "Pasta", 200).append("deposito", "Fede Depositos")); 
+	    productos2.add(createProducto(8, "Lentejas", 150).append("deposito", "Fede Depositos")); 
+	    productos2.add(createProducto(9, "Sopa Instantánea", 90).append("deposito", "Juanjo Depositos")); 
+	    productos2.add(createProducto(10, "Cereal", 200).append("deposito", "Juanjo Depositos")); 
 	    
 	    List<Document> productos3 = new ArrayList<>();
 	    
-	    productos3.add(createProducto(11, "Ramen", 120).append("deposito", "Juanjo Depositos")); // Meme product
-	    productos3.add(createProducto(12, "Energizante", 85).append("deposito", "Juanjo Depositos"));  // Meme product
+	    productos3.add(createProducto(11, "Ramen", 120).append("deposito", "Juanjo Depositos"));
+	    productos3.add(createProducto(12, "Energizante", 85).append("deposito", "Juanjo Depositos"));
 	    
 	    
 	    Document newPedido2 = new Document("idPedido",2)
